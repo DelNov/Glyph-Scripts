@@ -354,10 +354,10 @@ for {set i 0} {$i <= $N_SUB} {incr i} {
   for {set j 0} {$j <= $N_SUB} {incr j} {
 
     # Calculate rod box
-    set x_r_min [expr $W * $i - $W_HALF - $BL*0.5]
-    set y_r_min [expr $W * $j - $W_HALF - $BL*0.5]
-    set x_r_max [expr $W * $i + $W_HALF + $BL*0.5]
-    set y_r_max [expr $W * $j + $W_HALF + $BL*0.5]
+    set x_r_min [expr $W * $i - $W_HALF       - $BL*0.5]
+    set y_r_min [expr $W * $j - $W_HALF       - $BL*0.5]
+    set x_r_max [expr $W * $i + $W_HALF       + $BL*0.5]
+    set y_r_max [expr $W * $j + $W_HALF * 0.5 + $BL*0.5]
 
     set rod_box [list [list $x_r_min  $y_r_min  -1.0e+6 ]  \
                       [list $x_r_max  $y_r_max   1.0e+6 ]]
@@ -368,6 +368,24 @@ for {set i 0} {$i <= $N_SUB} {incr i} {
     set joining [pw::DomainStructured join -reject _TMP(ignored) $dom_around_rod]
     unset _TMP(ignored)
     unset joining
+
+
+    # Calculate rod box
+    set x_r_min [expr $W * $i - $W_HALF       - $BL*0.5]
+    set y_r_min [expr $W * $j - $W_HALF * 0.5 - $BL*0.5]
+    set x_r_max [expr $W * $i + $W_HALF       + $BL*0.5]
+    set y_r_max [expr $W * $j + $W_HALF       + $BL*0.5]
+
+    set rod_box [list [list $x_r_min  $y_r_min  -1.0e+6 ]  \
+                      [list $x_r_max  $y_r_max   1.0e+6 ]]
+
+    set dom_around_rod [Delnov_Get_Entities_In_Bounding_Box $dom_only $rod_box]
+
+    # join around rod
+    set joining [pw::DomainStructured join -reject _TMP(ignored) $dom_around_rod]
+    unset _TMP(ignored)
+    unset joining
+
   }
 }    
 unset dom_only
