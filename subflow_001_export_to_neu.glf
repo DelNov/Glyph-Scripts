@@ -12,7 +12,7 @@ pw::Application clearModified
 #--------------------------------------------
 # Set solver to Gambit (neutral file format) 
 #--------------------------------------------
-pw::Application setCAESolver {Gambit} 3
+pw::Application setCAESolver {GAMBIT} 3
 
 #----------------------------------------
 # Constants (parameters) for this script
@@ -516,8 +516,6 @@ foreach ge [pw::Grid getAll] {
 $periodic_bnd_cond apply $per_faces
 $wall_bnd_cond apply     $wall_faces
 
-pw::Display zoomToFit -animate 1
-
 #--------------------------
 # Export data for analysis
 #--------------------------
@@ -526,13 +524,11 @@ pw::Display zoomToFit -animate 1
 set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
 
 # ... and export them
-set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]
-  $export initialize -strict -type CAE {subflow_001.neu}
-  $export setAttribute FilePrecision Double
-  $export setAttribute GridStructuredAsUnstructured true
-  $export setAttribute ExportParentElements true
-  $export verify
+set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]] 
+  $export initialize -type CAE {subflow_001.neu}
+  if {![$export verify]} {
+    error "Data verification failed."
+  }
   $export write
 $export end
-
 unset export

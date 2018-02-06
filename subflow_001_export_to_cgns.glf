@@ -516,8 +516,6 @@ foreach ge [pw::Grid getAll] {
 $periodic_bnd_cond apply $per_faces
 $wall_bnd_cond apply     $wall_faces
 
-pw::Display zoomToFit -animate 1
-
 #--------------------------
 # Export data for analysis
 #--------------------------
@@ -527,11 +525,9 @@ set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
 
 # ... and export them
 set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]
-  $export initialize -strict -type CAE {subflow_001.cgns}
+  $export initialize -type CAE {subflow_001.cgns}
   $export setAttribute FilePrecision Double
   $export setAttribute GridStructuredAsUnstructured true
   $export setAttribute ExportParentElements true
-  $export verify
-  $export write
 $export end
 unset export
