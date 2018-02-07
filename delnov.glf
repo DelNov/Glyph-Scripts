@@ -32,6 +32,26 @@ proc Delnov_Create_Domain { con1 con2 con3 con4 } {
 }
 
 #===============================================================================
+proc Delnov_Create_Unstructured_Domain { con1 con2 con3 } {
+#-------------------------------------------------------------------------------
+  set create [pw::Application begin Create]
+
+    # Create edge
+    set edge [pw::Edge create]
+
+    foreach con $con1 {$edge addConnector [pw::GridEntity getByName $con]}
+    foreach con $con2 {$edge addConnector [pw::GridEntity getByName $con]}
+    foreach con $con3 {$edge addConnector [pw::GridEntity getByName $con]}
+
+    # Create domain
+    set domain [pw::DomainUnstructured create]
+    $domain addEdge $edge
+
+  $create end
+  unset create
+}
+
+#===============================================================================
 proc Delnov_Create_Arc { pnt1 pnt2 x y z } {
 #-------------------------------------------------------------------------------
   set create [pw::Application begin Create]
@@ -305,4 +325,29 @@ proc Delnov_Introduce_Bnd_Conds { bnd_cond_list } {
   }
 
   return $bc_list
+}
+
+#===============================================================================
+proc Delnov_Create_Unstructured_Block { domain_list } {
+#-------------------------------------------------------------------------------
+
+  set wrapping [pw::FaceUnstructured create]
+  set create_block [pw::Application begin Create]
+    set block [pw::BlockUnstructured create]
+    foreach dom $domain_list {
+      $wrapping addDomain [pw::GridEntity getByName $dom]
+    }
+    $block addFace $wrapping
+  $create_block end
+  unset create_block
+  unset wrapping
+
+  set create_block [pw::Application begin UnstructuredSolver [list $block]]
+    $create_block run Initialize
+  $create_block end
+  unset create_block
+
+  set create_block [pw::Application begin UnstructuredSolver [list $block]]
+  $create_block abort
+  unset create_block
 }
