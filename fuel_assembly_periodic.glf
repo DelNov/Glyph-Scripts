@@ -164,10 +164,10 @@ Delnov_Set_Dimension $con_blay_list $N_BND_LAY
 #------------------
 # Creating domains
 #------------------
-Delnov_Create_Domain "cor-1" "seg-5" "cor-2" "seg-3"
-Delnov_Create_Domain "cor-2" "mid-3" "cor-3" "mid-2"
-Delnov_Create_Domain "cor-3" "seg-6" "cor-4" "seg-4"
-Delnov_Create_Domain [list "seg-3" "mid-2" "seg-4"]   \
+Delnov_Create_Structured_Domain "cor-1" "seg-5" "cor-2" "seg-3"
+Delnov_Create_Structured_Domain "cor-2" "mid-3" "cor-3" "mid-2"
+Delnov_Create_Structured_Domain "cor-3" "seg-6" "cor-4" "seg-4"
+Delnov_Create_Structured_Domain [list "seg-3" "mid-2" "seg-4"]   \
                            "lay-2"                    \
                      [list "seg-2" "mid-1" "seg-1" ]  \
                            "lay-1"
@@ -244,7 +244,7 @@ unset paste
 unset new_ent
 
 # Create the central domain which was missing
-Delnov_Create_Domain "mid-3" "mid-6" "mid-12" "mid-9"
+Delnov_Create_Structured_Domain "mid-3" "mid-6" "mid-12" "mid-9"
 
 puts "Created basic segment of the geometry (cross)"
 

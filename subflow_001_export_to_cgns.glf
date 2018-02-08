@@ -138,49 +138,54 @@ Delnov_Create_Line_Name "point-12" "point-11"                "seg-6"
 
 puts "Defined all the segments"
 
-# Group the connections in the core, and set their resolution
-set con_cor_list [list]
+#-----------------
+# Set resolutions 
+#-----------------
+
+# Group the connections' names in the core
+set con_cor_names [list]
 for {set i 1} {$i <= 4} {incr i} {
-  lappend con_cor_list [pw::GridEntity getByName [format cor-%1d $i]]
+  lappend con_cor_names [format cor-%1d $i]
 }
-Delnov_Set_Dimension $con_cor_list $N_CORE
 
-# Set dimensions in the segments in tangential direction
-set con_seg_list [list]
+# Group the connections' names in tangential direction
+set con_seg_names [list]
 for {set i 1} {$i <= 6} {incr i} {
-  lappend con_seg_list [pw::GridEntity getByName [format seg-%1d $i]]
+  lappend con_seg_names [format seg-%1d $i]
 }
-Delnov_Set_Dimension $con_seg_list $N_TANG_12_FINE
 
-# Set dimensions in the segments in the middle
-set con_mid_list [list]
+# Group the connections' names in the middle
+set con_mid_names [list]
 for {set i 1} {$i <= 3} {incr i} {
-  lappend con_mid_list [pw::GridEntity getByName [format mid-%1d $i]]
+  lappend con_mid_names [format mid-%1d $i]
 }
-Delnov_Set_Dimension $con_mid_list $N_TANG_12_TENT
+
+# Set their resolutins
+Delnov_Set_Dimension_By_Name_List $con_cor_names $N_CORE
+Delnov_Set_Dimension_By_Name_List $con_seg_names $N_TANG_12_FINE
+Delnov_Set_Dimension_By_Name_List $con_mid_names $N_TANG_12_TENT
 
 # Set dimensions in the boundary layer
-set con_blay_list [list [pw::GridEntity getByName "lay-1"]    \
-                        [pw::GridEntity getByName "lay-2"]]
-Delnov_Set_Dimension $con_blay_list $N_BND_LAY
+set con_blay_names [list "lay-1" "lay-2"]
+Delnov_Set_Dimension_By_Name_List $con_blay_names $N_BND_LAY
 
 #------------------
 # Creating domains
 #------------------
-Delnov_Create_Domain "cor-1" "seg-5" "cor-2" "seg-3"
-Delnov_Create_Domain "cor-2" "mid-3" "cor-3" "mid-2"
-Delnov_Create_Domain "cor-3" "seg-6" "cor-4" "seg-4"
-Delnov_Create_Domain [list "seg-3" "mid-2" "seg-4"]   \
-                           "lay-2"                    \
-                     [list "seg-2" "mid-1" "seg-1" ]  \
-                           "lay-1"
+Delnov_Create_Structured_Domain "cor-1" "seg-5" "cor-2" "seg-3"
+Delnov_Create_Structured_Domain "cor-2" "mid-3" "cor-3" "mid-2"
+Delnov_Create_Structured_Domain "cor-3" "seg-6" "cor-4" "seg-4"
+Delnov_Create_Structured_Domain [list "seg-3" "mid-2" "seg-4"]   \
+                                      "lay-2"                    \
+                                [list "seg-2" "mid-1" "seg-1" ]  \
+                                      "lay-1"
 
 puts "Defined domains"
 
 #---------------------------------------
 # Set first cell size on the wall
 #---------------------------------------
-Delnov_Set_Begin_Spacing $con_blay_list $Y_FIRST_ROD
+Delnov_Set_Begin_Spacing_By_Name_List $con_blay_names $Y_FIRST_ROD
 
 # Get the first and last cell size in boundary layer
 
@@ -188,31 +193,30 @@ Delnov_Set_Begin_Spacing $con_blay_list $Y_FIRST_ROD
 # Set spacing of edges in the core, 
 # this here is on top of boundary layer
 #---------------------------------------
-set con [lindex $con_blay_list 0]
-set spc [Delnov_Get_End_Spacing $con]
-Delnov_Set_Begin_Spacing $con_cor_list $spc
+set con [lindex $con_blay_names 0]
+set spc [Delnov_Get_End_Spacing_By_Name $con]
+Delnov_Set_Begin_Spacing_By_Name_List $con_cor_names $spc
 
 #------------------------------------
 # Set spacing towards the flat walls
 #------------------------------------
-Delnov_Set_Begin_Spacing $con_seg_list $Y_FIRST_WALL
+Delnov_Set_Begin_Spacing_By_Name_List $con_seg_names $Y_FIRST_WALL
 
 #-----------------------------------------
 # Re-adjust spacing in the middle segment
 #-----------------------------------------
 
 # Get last cell size in the first segment
-set con [lindex $con_seg_list 0]
-set dim [$con getDimension]
-set last_spc [Delnov_Get_End_Spacing $con]
+set con [lindex $con_seg_names 0]
+set last_spc [Delnov_Get_End_Spacing_By_Name $con]
 
 # Get the length of the middle segment
-set con [lindex $con_mid_list 0]
-set tot_len [$con getTotalLength -constrained onDB]
+set con [lindex $con_mid_names 0]
+set tot_len [Delnov_Get_Length_By_Name $con]
 set new_dim [expr int(floor($tot_len / $last_spc))]
 
 # Finaly adjust dimension
-Delnov_Modify_Dimension $con_mid_list $new_dim
+Delnov_Modify_Dimension_By_Name_List $con_mid_names $new_dim
 
 puts "Fixed all resolutions and spacings"
 
@@ -247,7 +251,7 @@ unset paste
 unset new_ent
 
 # Create the central domain which was missing
-Delnov_Create_Domain "mid-3" "mid-6" "mid-12" "mid-9"
+Delnov_Create_Structured_Domain "mid-3" "mid-6" "mid-12" "mid-9"
 
 puts "Created basic segment of the geometry (cross)"
 
@@ -286,12 +290,11 @@ set box [list [list $B_MIN $B_MIN -1.0e+6]  \
 set seg_only     [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "seg"]
 set box_seg_only [Delnov_Get_Entities_In_Bounding_Box $seg_only $box]
 
-set con [lindex $con_mid_list 0]
-set dim [$con getDimension]
+set con [lindex $con_mid_names 0]
+set dim [Delnov_Get_Dimension_By_Name $con]
 Delnov_Modify_Dimension $box_seg_only $dim
 
 puts "Created the matrix"
-
 
 # At this point you have connections called:
 # "cor", "lay", "mid", "rod", "seg" 
@@ -403,7 +406,7 @@ puts "Extending to 3D"
 # Create new blocks 
 #-------------------
 set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
-Delnov_Extrude_Structured_Block $all_dom $H $N_H
+Delnov_Extrude_Structured_Block $all_dom "z" $H $N_H
 
 #--------------
 # Join domains
@@ -417,20 +420,7 @@ unset dom_only
 #-----------------------------
 # Specify boundary conditions 
 #-----------------------------
-
-# Introduce boundary condition named "wall"
-set create_bnd_cond [pw::BoundaryCondition create]
-  set bnd_cond_name [pw::BoundaryCondition getByName "bc-2"]
-  $bnd_cond_name setName "wall"
-unset create_bnd_cond
-set wall_bnd_cond [pw::BoundaryCondition getByName "wall"]
-
-# Introduce boundary condition named "periodic"
-set create_bnd_cond [pw::BoundaryCondition create]
-  set bnd_cond_name [pw::BoundaryCondition getByName "bc-3"]
-  $bnd_cond_name setName "periodic"
-unset create_bnd_cond
-set periodic_bnd_cond [pw::BoundaryCondition getByName "periodic"]
+Delnov_Introduce_Bnd_Conds [list "wall" "periodic"]
 
 # Select all faces with boundary conditions
 set per_faces [list]
@@ -487,8 +477,11 @@ foreach ge [pw::Grid getAll] {
   }
 }  
 
+set wall_bnd_cond     [pw::BoundaryCondition getByName "wall"]
+set periodic_bnd_cond [pw::BoundaryCondition getByName "periodic"]
+
 $periodic_bnd_cond apply $per_faces
-$wall_bnd_cond apply     $wall_faces
+$wall_bnd_cond     apply $wall_faces
 
 #--------------------------
 # Export data for analysis

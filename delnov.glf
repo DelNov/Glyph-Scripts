@@ -5,7 +5,7 @@ proc Delnov_Create_Point { x y z } {
 }
 
 #===============================================================================
-proc Delnov_Create_Domain { con1 con2 con3 con4 } {
+proc Delnov_Create_Structured_Domain { con1 con2 con3 con4 } {
 #-------------------------------------------------------------------------------
   set create [pw::Application begin Create]
 
@@ -146,6 +146,20 @@ proc Delnov_Set_Begin_Spacing { con_list delta } {
 }
 
 #===============================================================================
+proc Delnov_Set_Begin_Spacing_By_Name_List { con_name_list delta } {
+#-------------------------------------------------------------------------------
+
+  # Create a list of segments by provided name list ...
+  set con_list [list]
+  foreach name $con_name_list {
+    lappend con_list [pw::GridEntity getByName $name]
+  }
+
+  # ... and call the sister function
+  Delnov_Set_Begin_Spacing $con_list $delta
+}
+
+#===============================================================================
 proc Delnov_Set_End_Spacing { con_list delta } {
 #-------------------------------------------------------------------------------
   foreach con $con_list {
@@ -156,12 +170,43 @@ proc Delnov_Set_End_Spacing { con_list delta } {
 }
 
 #===============================================================================
+proc Delnov_Set_End_Spacing_By_Name_List { con_name_list delta } {
+#-------------------------------------------------------------------------------
+
+  # Create a list of segments by provided name list ...
+  set con_list [list]
+  foreach name $con_name_list {
+    lappend con_list [pw::GridEntity getByName $name]
+  }
+
+  # ... and call the sister function
+  Delnov_Set_End_Spacing $con_list $delta
+}
+
+
+#===============================================================================
 proc Delnov_Set_Dimension { con_list n } {
 #-------------------------------------------------------------------------------
   set con_coll [pw::Collection create]
   $con_coll set $con_list
   $con_coll do resetGeneralDistributions
   $con_coll do setDimension $n
+}
+
+#===============================================================================
+proc Delnov_Set_Dimension_By_Name_List { con_name_list n } {
+#-------------------------------------------------------------------------------
+
+  # Create a list of segments by provided name list ...
+  set seg_list [list]
+  foreach name $con_name_list {
+    lappend seg_list [pw::GridEntity getByName $name]
+  }
+
+  # ... and call the sister function
+  Delnov_Set_Dimension $seg_list $n
+
+  unset seg_list
 }
 
 #===============================================================================
@@ -192,10 +237,35 @@ proc Delnov_Get_Actual_Spacing { con loc } {
 #===============================================================================
 proc Delnov_Get_End_Spacing { con } {
 #-------------------------------------------------------------------------------
+
+  # Fetch the dimension (resolution) of the domain ..
   set dim [$con getDimension]
+
+  # ... to be able to fetch last actual spacing
   set spc [Delnov_Get_Actual_Spacing $con $dim]
+
+  unset dim
+
   return $spc
 }
+
+#===============================================================================
+proc Delnov_Get_End_Spacing_By_Name { con_name } {
+#-------------------------------------------------------------------------------
+
+  # Fetch the entity from its name ...
+  set con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $con_name]
+
+  # ... and call sister function to get spacing
+  set dim [$con getDimension]
+  set spc [Delnov_Get_Actual_Spacing $con $dim]
+
+  unset dim
+  unset con
+
+  return $spc
+}
+
 
 #===============================================================================
 proc Delnov_Get_Begin_Spacing { con } {
@@ -219,6 +289,35 @@ proc Delnov_Modify_Dimension { con_list n } {
     $modify balance -resetGeneralDistributions
   $modify end
   unset modify
+}
+
+#===============================================================================
+proc Delnov_Modify_Dimension_By_Name_Pattern { pat n } {
+#-------------------------------------------------------------------------------
+
+  # Extract grid entites by the name pattern ...
+  set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $pat]
+
+  # ... and call the sister function
+  Delnov_Modify_Dimension $all_con $n
+
+  unset all_con
+}
+
+#===============================================================================
+proc Delnov_Modify_Dimension_By_Name_List { con_names n } {
+#-------------------------------------------------------------------------------
+#   con_names - list of connection names
+#   n         - new dimension
+#-------------------------------------------------------------------------------
+
+  # Extract grid entites by the name pattern ...
+  set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $con_names]
+
+  # ... and call the sister function
+  Delnov_Modify_Dimension $all_con $n
+
+  unset all_con
 }
 
 #===============================================================================
@@ -328,7 +427,20 @@ proc Delnov_Introduce_Bnd_Conds { bnd_cond_list } {
 }
 
 #===============================================================================
-proc Delnov_Extrude_Structured_Block { dom_list dist n } {
+proc Delnov_Extrude_Structured_Block_By_Name_Pattern { pat dir dist n } {
+#-------------------------------------------------------------------------------
+
+  # Extract grid entites by the name pattern ...
+  set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $pat]
+
+  # ... and call the sister function
+  Delnov_Extrude_Structured_Block $all_dom $dir $dist $n
+
+  unset all_dom
+}
+
+#===============================================================================
+proc Delnov_Extrude_Structured_Block { dom_list dir dist n } {
 #-------------------------------------------------------------------------------
 set creation [pw::Application begin Create]
 
@@ -363,7 +475,13 @@ set creation [pw::Application begin Create]
     # For each block define the mode of translation and the translate direction
     foreach b $new_blocks {
       $b setExtrusionSolverAttribute Mode Translate
-      $b setExtrusionSolverAttribute TranslateDirection {0 0 1}
+      if { $dir == "x" } {
+        $b setExtrusionSolverAttribute TranslateDirection {1 0 0}
+      } elseif { $dir == "y" } {
+        $b setExtrusionSolverAttribute TranslateDirection {0 1 0}
+      } elseif { $dir == "z" } {
+        $b setExtrusionSolverAttribute TranslateDirection {0 0 1}
+      }
       $b setExtrusionSolverAttribute TranslateDistance   $dist
     }
 
@@ -375,9 +493,23 @@ set creation [pw::Application begin Create]
 }
 
 #===============================================================================
-proc Delnov_Extrude_Unstructured_Block { dom_list dist n } {
+proc Delnov_Extrude_Unstructured_Block_By_Name_Pattern { pat dir dist n } {
 #-------------------------------------------------------------------------------
-set creation [pw::Application begin Create]
+
+  # Extract grid entites by the name pattern ...
+  set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $pat]
+
+  # ... and call the sister function
+  Delnov_Extrude_Unstructured_Block $all_dom $dir $dist $n
+
+  unset all_dom
+}
+
+#===============================================================================
+proc Delnov_Extrude_Unstructured_Block { dom_list dir dist n } {
+#-------------------------------------------------------------------------------
+
+  set creation [pw::Application begin Create]
 
   #----------------------------------------------------------
   # Create a list of structured faces from groups of domains
@@ -410,7 +542,13 @@ set creation [pw::Application begin Create]
     # For each block define the mode of translation and the translate direction
     foreach b $new_blocks {
       $b setExtrusionSolverAttribute Mode Translate
-      $b setExtrusionSolverAttribute TranslateDirection {0 0 1}
+      if { $dir == "x" } {
+        $b setExtrusionSolverAttribute TranslateDirection {1 0 0}
+      } elseif { $dir == "y" } {
+        $b setExtrusionSolverAttribute TranslateDirection {0 1 0}
+      } elseif { $dir == "z" } {
+        $b setExtrusionSolverAttribute TranslateDirection {0 0 1}
+      }
       $b setExtrusionSolverAttribute TranslateDistance   $dist
     }
 
@@ -445,3 +583,47 @@ proc Delnov_Create_Unstructured_Block { domain_list } {
   $create_block abort
   unset create_block
 }
+
+#===============================================================================
+proc Delnov_Get_Length_By_Name { con_name } {
+#-------------------------------------------------------------------------------
+# Get physical length of a connection specified by its name.
+#-------------------------------------------------------------------------------
+
+  # Fetch the connection from its name ...
+  set con [pw::GridEntity getByName $con_name]
+
+  # ... and retreive its length from database
+  set len [$con getTotalLength -constrained onDB]
+
+  unset con
+
+  return $len
+}
+
+#===============================================================================
+proc Delnov_Get_Dimension { con } {
+#-------------------------------------------------------------------------------
+
+  set dim [$con getDimension]
+
+  return $dim
+}
+
+#===============================================================================
+proc Delnov_Get_Dimension_By_Name { con_name } {
+#-------------------------------------------------------------------------------
+# Get physical length of a connection specified by its name.
+#-------------------------------------------------------------------------------
+
+  # Fetch the connection from its name ...
+  set con [pw::GridEntity getByName $con_name]
+
+  # ... and retreive its length from database
+  set dim [$con getDimension]
+
+  unset con
+
+  return $dim
+}
+

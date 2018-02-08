@@ -52,9 +52,7 @@ Delnov_Create_Line "point-3" "point-1"
 #--------------------------------------
 # Define resolution on all connections
 #--------------------------------------
-set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "con"]
-Delnov_Modify_Dimension $all_con $N
-unset all_con
+Delnov_Modify_Dimension_By_Name_Pattern "con" $N
 
 #------------------
 # Creating domains
@@ -66,8 +64,7 @@ puts "Defined domains"
 #------------------
 # Create the block
 #------------------
-set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
-Delnov_Extrude_Unstructured_Block $all_dom $W $N
+Delnov_Extrude_Unstructured_Block_By_Name_Pattern "dom" "z" $W $N
 
 #-----------------------------
 # Specify boundary conditions 
@@ -92,7 +89,7 @@ $bc apply [list [pw::GridEntity getByName "blk-1"]      \
 
 set bc [pw::BoundaryCondition getByName "top"]
 $bc apply [list [pw::GridEntity getByName "blk-1"]      \
-                [pw::GridEntity getByName "dom-1"]  ]
+                [pw::GridEntity getByName "dom-5"]  ]
 
 #------------------------
 # Save data for analysis

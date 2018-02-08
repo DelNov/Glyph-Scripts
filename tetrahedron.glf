@@ -59,9 +59,7 @@ Delnov_Create_Line "point-3" "point-4"
 #--------------------------------------
 # Define resolution on all connections
 #--------------------------------------
-set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "con"]
-Delnov_Modify_Dimension $all_con $N
-unset all_con
+Delnov_Modify_Dimension_By_Name_Pattern "con" $N
 
 #------------------
 # Creating domains

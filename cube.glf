@@ -63,27 +63,25 @@ Delnov_Create_Line "point-4" "point-8"
 #------------------
 # Creating domains
 #------------------
-Delnov_Create_Domain "con-1"  "con-2"  "con-3"  "con-4"   ; # bottom
-Delnov_Create_Domain "con-5"  "con-6"  "con-7"  "con-8"   ; # top
-Delnov_Create_Domain "con-4"  "con-12" "con-8"  "con-9"   ; # west
-Delnov_Create_Domain "con-2"  "con-11" "con-6"  "con-10"  ; # east
-Delnov_Create_Domain "con-1"  "con-10" "con-5"  "con-9"   ; # south
-Delnov_Create_Domain "con-3"  "con-11" "con-7"  "con-12"  ; # north
+Delnov_Create_Structured_Domain "con-1"  "con-2"  "con-3"  "con-4"   ; # bottom
+Delnov_Create_Structured_Domain "con-5"  "con-6"  "con-7"  "con-8"   ; # top
+Delnov_Create_Structured_Domain "con-4"  "con-12" "con-8"  "con-9"   ; # west
+Delnov_Create_Structured_Domain "con-2"  "con-11" "con-6"  "con-10"  ; # east
+Delnov_Create_Structured_Domain "con-1"  "con-10" "con-5"  "con-9"   ; # south
+Delnov_Create_Structured_Domain "con-3"  "con-11" "con-7"  "con-12"  ; # north
 
 puts "Defined domains"
 
 #--------------------------------------
 # Define resolution on all connections
 #--------------------------------------
-set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "con"]
-Delnov_Modify_Dimension $all_con $N
-unset all_con
+Delnov_Modify_Dimension_By_Name_Pattern "con" $N
 
 #----------------
 # Create a block
 #----------------
-set all_faces [list]
 set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+set all_faces [list]
 foreach dom $all_dom {
   lappend all_faces [pw::FaceStructured createFromDomains $dom]
 }

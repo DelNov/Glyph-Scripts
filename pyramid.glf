@@ -67,7 +67,7 @@ unset all_con
 #------------------
 # Creating domains
 #------------------
-Delnov_Create_Domain "con-1"  "con-2"  "con-3"  "con-4"
+Delnov_Create_Structured_Domain "con-1"  "con-2"  "con-3"  "con-4"
 Delnov_Create_Unstructured_Domain "con-1"  "con-6"  "con-5" 
 Delnov_Create_Unstructured_Domain "con-2"  "con-7"  "con-6" 
 Delnov_Create_Unstructured_Domain "con-3"  "con-8"  "con-7" 
