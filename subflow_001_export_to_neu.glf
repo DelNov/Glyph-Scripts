@@ -1,5 +1,3 @@
-# Pointwise V17.2R2 Journal file - Sat Jan 27 12:01:41 2018
-
 #------------------
 # Initial settings
 #------------------
@@ -404,50 +402,8 @@ puts "Extending to 3D"
 #-------------------
 # Create new blocks 
 #-------------------
-set creation [pw::Application begin Create]
-
-  # Create a list of structured faces from groups of domains
-  # (These groups have been defined above) 
-  set all_faces [list]
-  set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
-  foreach dom $all_dom {
-    lappend all_faces [pw::FaceStructured createFromDomains $dom]
-  }
-
-  # Create a list of new blocks to be created
-  set new_blocks [list]
-  foreach fac $all_faces {
-    set bs [pw::BlockStructured create]
-    $bs addFace $fac
-    lappend new_blocks $bs
-  }
-  unset all_faces
-
-$creation end
-unset creation
-
-puts "Expanding new blocks to 3D"
-
-#-------------------------
-# Define extrusion solver
-#-------------------------
-set extrusion_solver [pw::Application begin ExtrusionSolver $new_blocks]
-  $extrusion_solver setKeepFailingStep true
-
-  # For each block define the mode of translation and the translate direction
-  foreach b $new_blocks {
-    $b setExtrusionSolverAttribute Mode Translate
-    $b setExtrusionSolverAttribute TranslateDirection {0 0 1}
-    $b setExtrusionSolverAttribute TranslateDistance  $H
-  }
-
-  # Run the solver for desired number of steps
-  $extrusion_solver run $N_H
-
-$extrusion_solver end
-unset extrusion_solver
-
-puts "Finished"
+set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+Delnov_Extrude_Structured_Block $all_dom $H $N_H
 
 #--------------
 # Join domains
@@ -550,3 +506,5 @@ set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]
   $export write
 $export end
 unset export
+
+puts "Finished"
