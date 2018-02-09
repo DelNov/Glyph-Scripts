@@ -22,7 +22,7 @@ set SQRT3         [expr sqrt(3.0)]
 set W             1.0   
 
 # Concerning resolution
-set N            10
+set N            11
 
 # Coordinates origin
 set X_0  0.0    ; # [expr -$W * 0.5]
@@ -64,7 +64,7 @@ puts "Defined domains"
 #------------------
 # Create the block
 #------------------
-Delnov_Extrude_Unstructured_Block_By_Name_Pattern "dom" "z" $W $N
+Delnov_Extrude_Unstructured_Block_By_Name_Pattern "dom" "z" $W [expr $N - 1]
 
 #-----------------------------
 # Specify boundary conditions 
@@ -100,7 +100,7 @@ set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
 
 # ... and export them
 set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]
-  $export initialize -type CAE {tetrahedron.cgns}
+  $export initialize -type CAE {wedge.cgns}
   $export setAttribute FilePrecision Double
   $export setAttribute ExportParentElements true
   if {![$export verify]} {

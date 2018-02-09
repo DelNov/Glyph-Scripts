@@ -19,7 +19,7 @@ set PI            3.14159265359
 set W             1.0   
 
 # Concerning resolution
-set N            10
+set N            11
 
 # Coordinates origin
 set X_0  0.0    ; # [expr -$W * 0.5]

@@ -492,7 +492,7 @@ set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
 
 # ... and export them
 set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]
-  $export initialize -type CAE {subflow_001_good.cgns}
+  $export initialize -type CAE {subflow_001.cgns}
   $export setAttribute FilePrecision Double
   $export setAttribute GridStructuredAsUnstructured true
   $export setAttribute ExportParentElements true
