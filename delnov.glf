@@ -32,6 +32,34 @@ proc Delnov_Create_Structured_Domain { con1 con2 con3 con4 } {
 }
 
 #===============================================================================
+proc Delnov_Create_Structured_Domain_Name { con1 con2 con3 con4 name } {
+#-------------------------------------------------------------------------------
+  set create [pw::Application begin Create]
+
+    # Create edges
+    set edge1 [pw::Edge create]
+    set edge2 [pw::Edge create]
+    set edge3 [pw::Edge create]
+    set edge4 [pw::Edge create]
+
+    foreach con $con1 {$edge1 addConnector [pw::GridEntity getByName $con]}
+    foreach con $con2 {$edge2 addConnector [pw::GridEntity getByName $con]}
+    foreach con $con3 {$edge3 addConnector [pw::GridEntity getByName $con]}
+    foreach con $con4 {$edge4 addConnector [pw::GridEntity getByName $con]}
+
+    # Create domain
+    set domain [pw::DomainStructured create]
+    $domain addEdge $edge1
+    $domain addEdge $edge2
+    $domain addEdge $edge3
+    $domain addEdge $edge4
+    $domain setName $name
+
+  $create end
+  unset create
+}
+
+#===============================================================================
 proc Delnov_Create_Unstructured_Domain { con1 con2 con3 } {
 #-------------------------------------------------------------------------------
   set create [pw::Application begin Create]
@@ -46,6 +74,27 @@ proc Delnov_Create_Unstructured_Domain { con1 con2 con3 } {
     # Create domain
     set domain [pw::DomainUnstructured create]
     $domain addEdge $edge
+
+  $create end
+  unset create
+}
+
+#===============================================================================
+proc Delnov_Create_Unstructured_Domain_Name { con1 con2 con3 name } {
+#-------------------------------------------------------------------------------
+  set create [pw::Application begin Create]
+
+    # Create edge
+    set edge [pw::Edge create]
+
+    foreach con $con1 {$edge addConnector [pw::GridEntity getByName $con]}
+    foreach con $con2 {$edge addConnector [pw::GridEntity getByName $con]}
+    foreach con $con3 {$edge addConnector [pw::GridEntity getByName $con]}
+
+    # Create domain
+    set domain [pw::DomainUnstructured create]
+    $domain addEdge $edge
+    $domain setName $name
 
   $create end
   unset create
@@ -265,7 +314,6 @@ proc Delnov_Get_End_Spacing_By_Name { con_name } {
 
   return $spc
 }
-
 
 #===============================================================================
 proc Delnov_Get_Begin_Spacing { con } {
@@ -582,6 +630,28 @@ proc Delnov_Create_Unstructured_Block { domain_list } {
   set create_block [pw::Application begin UnstructuredSolver [list $block]]
   $create_block abort
   unset create_block
+}
+
+#===============================================================================
+proc Delnov_Create_Structured_Block { domain_list } {
+#-------------------------------------------------------------------------------
+# Creates a structured block from six domains
+#-------------------------------------------------------------------------------
+
+  set create_block [pw::Application begin Create]
+    set block [pw::BlockStructured create]
+
+    foreach dom_nam $domain_list {
+
+      set dom [pw::GridEntity getByName $dom_nam]
+      set fac [pw::FaceStructured create]
+      $fac addDomain $dom
+      $block addFace $fac
+    }
+
+  $create_block end
+  unset create_block
+
 }
 
 #===============================================================================
