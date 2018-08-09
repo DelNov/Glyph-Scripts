@@ -32,6 +32,112 @@ proc Delnov_Create_Structured_Domain { con1 con2 con3 con4 } {
 }
 
 #===============================================================================
+proc Delnov_Copy_Objects_By_Name_Into_Clipboard { object_list } {
+#-------------------------------------------------------------------------------
+
+  set local_clipboard_list [list]
+
+  foreach object $object_list {
+    # Select object from object_list by name
+    set pw_object_in_clipboard [pw::GridEntity getByName $object]
+
+    # Construct local_clipboard_list
+    lappend local_clipboard_list $pw_object_in_clipboard
+  }
+
+  # Copy to clipboard
+  pw::Application setClipboard $local_clipboard_list
+
+  # deallocate
+  unset pw_object_in_clipboard
+  unset local_clipboard_list
+  unset object
+}
+
+#===============================================================================
+proc Delnov_Translate_Objects_From_Clipboard_Along_Vector { x y z } {
+#-------------------------------------------------------------------------------
+
+  # Paste selected object from clipboard
+  set paste [pw::Application begin Paste]
+
+    # Objects created by paste
+    set objects [$paste getEntities]
+
+    # Translate selected object
+    set translate [pw::Application begin Modify $objects]
+
+      pw::Entity transform [pwu::Transform translation [list $x $y $z]] \
+       [$translate getEntities]
+
+    $translate end
+  $paste end
+
+  # deallocate
+  unset objects
+  unset paste
+  unset translate
+}
+
+#===============================================================================
+proc Delnov_Rotate_Objects_From_Clipboard_Around_Line \
+  { x0 y0 z0 x1 y1 z1 angle } {
+#-------------------------------------------------------------------------------
+
+  # Paste selected object from clipboard
+  set paste [pw::Application begin Paste]
+
+    # Objects created by paste
+    set objects [$paste getEntities]
+
+    # Translate selected object
+    set rotate [pw::Application begin Modify $objects]
+
+      pw::Entity transform [pwu::Transform rotation -anchor \
+      [list $x0 $y0 $z0] [list $x1 $y1 $z1] $angle] [$rotate getEntities]
+
+    $rotate end
+  $paste end
+
+  # deallocate
+  unset objects
+  unset paste
+  unset rotate
+}
+
+#===============================================================================
+proc Delnov_Apply_Boundary_Condition_To_Domains_In_Block_By_Name \
+  { bc blk domains_in_block_list } {
+#-------------------------------------------------------------------------------
+# bc_name" "blk_name" [list "dom_name_1" "dom_name_2" .. "dom_name_last"]
+  set local_bc_list [list]
+
+  # Get b.c. pw object by name
+  set pw_bc [pw::BoundaryCondition getByName $bc]
+
+  # Get blk pw object by name
+  set pw_blk [pw::GridEntity getByName $blk]
+
+  foreach dom $domains_in_block_list {
+    # Get dom pw object by name
+    set pw_dom [pw::GridEntity getByName $dom]
+
+    # Construct local_bc_list; "Same" mean it belongs to current block
+    lappend local_bc_list [list $pw_blk $pw_dom Same]
+
+    # Apply b.c.
+    $pw_bc apply [list $pw_blk $pw_dom]
+  }
+
+  # deallocate
+  unset pw_bc
+  unset pw_blk
+  unset pw_dom
+  unset local_bc_list
+  unset dom
+}
+
+#===============================================================================
 proc Delnov_Create_Unstructured_Domain { con1 con2 con3 } {
 #-------------------------------------------------------------------------------
   set create [pw::Application begin Create]
@@ -112,7 +218,7 @@ proc Delnov_Create_Line { pnt1 pnt2 } {
 
   $create end
   unset create
-}  
+}
 
 #===============================================================================
 proc Delnov_Create_Line_Name { pnt1 pnt2 name } {
@@ -133,7 +239,7 @@ proc Delnov_Create_Line_Name { pnt1 pnt2 name } {
 
   $create end
   unset create
-}  
+}
 
 #===============================================================================
 proc Delnov_Set_Begin_Spacing { con_list delta } {
@@ -142,7 +248,7 @@ proc Delnov_Set_Begin_Spacing { con_list delta } {
     set mod [pw::Application begin Modify [list $con]]
       [[$con getDistribution 1] getBeginSpacing] setValue $delta
     $mod end
-  }  
+  }
 }
 
 #===============================================================================
@@ -166,7 +272,7 @@ proc Delnov_Set_End_Spacing { con_list delta } {
     set mod [pw::Application begin Modify [list $con]]
       [[$con getDistribution 1] getEndSpacing] setValue $delta
     $mod end
-  }  
+  }
 }
 
 #===============================================================================
@@ -266,13 +372,33 @@ proc Delnov_Get_End_Spacing_By_Name { con_name } {
   return $spc
 }
 
-
 #===============================================================================
 proc Delnov_Get_Begin_Spacing { con } {
 #-------------------------------------------------------------------------------
   set spc [Delnov_Get_Actual_Spacing $con 1]
   return $spc
 }
+
+# below added by xiaorongli 15th May, 2018
+
+#===============================================================================
+proc Delnov_Get_Begin_Spacing_By_Name { con_name } {
+#-------------------------------------------------------------------------------
+
+  # Fetch the entity from its name ...
+  set con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $con_name]
+
+  # ... and call sister function to get spacing
+  set spc [Delnov_Get_Actual_Spacing $con 1]
+
+
+  unset con
+
+  return $spc
+}
+
+
+# above added by xiaorongli 15th May, 2018
 
 #===============================================================================
 proc Delnov_Modify_Dimension { con_list n } {
@@ -342,7 +468,7 @@ proc Delnov_Get_Entities_By_Name_Pattern { pool pattern_list } {
       set name [$ge getName]
 
       # Select it if it matches the pattern
-      if { [string match $pattern [string range $name 0 [expr $pl-1]]] == 1 } { 
+      if { [string match $pattern [string range $name 0 [expr $pl-1]]] == 1 } {
         lappend sel_ent $ge
       }
     }
@@ -389,11 +515,11 @@ proc Delnov_Get_Entities_In_Bounding_Box { pool box } {
     # puts [format "%5.2f %5.2f %5.2f" $x_max $y_max $z_max]
 
     if {$xb > $x_min} {if {$xe > $x_min} {
-    if {$yb > $y_min} {if {$ye > $y_min} { 
-    if {$zb > $z_min} {if {$ze > $z_min} { 
+    if {$yb > $y_min} {if {$ye > $y_min} {
+    if {$zb > $z_min} {if {$ze > $z_min} {
     if {$xb < $x_max} {if {$xe < $x_max} {
-    if {$yb < $y_max} {if {$ye < $y_max} { 
-    if {$zb < $z_max} {if {$ze < $z_max} { 
+    if {$yb < $y_max} {if {$ye < $y_max} {
+    if {$zb < $z_max} {if {$ze < $z_max} {
       lappend sel_ent $ge
     } } } } } } } } } } } }
   }
@@ -405,7 +531,7 @@ proc Delnov_Get_Entities_In_Bounding_Box { pool box } {
 #===============================================================================
 proc Delnov_Introduce_Bnd_Conds { bnd_cond_list } {
 #-------------------------------------------------------------------------------
-#   Creates a list of boundary conditions.                       
+#   Creates a list of boundary conditions.
 #-------------------------------------------------------------------------------
 
   set bc_list [list]
@@ -584,6 +710,21 @@ proc Delnov_Create_Unstructured_Block { domain_list } {
   unset create_block
 }
 
+# Following function added by xiaorong li in July 2018
+# An example for input: [list "dom-1" "dom-2" "dom-3" "dom-4"]
+#===============================================================================
+proc Delnov_Create_Structured_Block { domain_list } {
+#-------------------------------------------------------------------------------
+set dlist [list]
+foreach dom $domain_list {
+  lappend dlist [pw::GridEntity getByName $dom]
+}
+set _TMP(PW_1) [pw::BlockStructured createFromDomains -poleDomains _TMP(poleDoms) -reject _TMP(unusedDoms) $dlist]
+unset _TMP(unusedDoms)
+unset _TMP(poleDoms)
+unset _TMP(PW_1)
+}
+
 #===============================================================================
 proc Delnov_Get_Length_By_Name { con_name } {
 #-------------------------------------------------------------------------------
@@ -626,4 +767,3 @@ proc Delnov_Get_Dimension_By_Name { con_name } {
 
   return $dim
 }
-
