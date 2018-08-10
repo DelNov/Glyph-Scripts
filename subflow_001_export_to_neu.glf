@@ -403,7 +403,7 @@ puts "Extending to 3D"
 # Create new blocks 
 #-------------------
 set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
-Delnov_Extrude_Structured_Block $all_dom $H $N_H
+Delnov_Extrude_Structured_Block $all_dom "z" $H $N_H
 
 #--------------
 # Join domains
