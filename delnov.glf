@@ -57,6 +57,7 @@ proc Delnov_Create_Structured_Domain_Name { con1 con2 con3 con4 name } {
 
   $create end
   unset create
+}
 
 #===============================================================================
 proc Delnov_Copy_Objects_By_Name_Into_Clipboard { object_list } {
