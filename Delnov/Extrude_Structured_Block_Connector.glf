@@ -1,7 +1,5 @@
 #===============================================================================
-proc Delnov_Extrude_Structured_Block { dom_list dir dist n } {
-#-------------------------------------------------------------------------------
-# Extrudes structured block from domains given in list dom_list
+proc Delnov_Extrude_Structured_Block_Connector { dom_list dir dist con } {
 #-------------------------------------------------------------------------------
 
   set creation [pw::Application begin Create]
@@ -32,7 +30,6 @@ proc Delnov_Extrude_Structured_Block { dom_list dir dist n } {
   # Define extrusion solver
   #-------------------------
   set extrusion_solver [pw::Application begin ExtrusionSolver $new_blocks]
-
     $extrusion_solver setKeepFailingStep true
 
     # For each block define the mode of translation and the translate direction
@@ -51,13 +48,15 @@ proc Delnov_Extrude_Structured_Block { dom_list dir dist n } {
       } elseif { $dir == "-z" } {
         $b setExtrusionSolverAttribute TranslateDirection { 0  0 -1}
       }
+      set connector [pw::GridEntity getByName $con]
+      $b setExtrusionSolverAttribute SpacingConnectors [list [list $connector 1]]
       $b setExtrusionSolverAttribute TranslateDistance   $dist
     }
 
     # Run the solver for desired number of steps
-    $extrusion_solver run $n
+    
+    $extrusion_solver run [Delnov_Get_Dimension_By_Name $con]
 
   $extrusion_solver end
   unset extrusion_solver
 }
-
