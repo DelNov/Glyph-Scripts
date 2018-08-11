@@ -1,5 +1,9 @@
 #===============================================================================
-proc Delnov_Create_Line { pnt1_name pnt2_name } {
+proc Delnov_Create_Line_From_Points_Name { pnt1_name pnt2_name line_name } {
+#-------------------------------------------------------------------------------
+# Creates line from two points specified by name, and names it
+#
+# Doesn't call sister function Delnov_Create_Line_From_Points
 #-------------------------------------------------------------------------------
 
   set create [pw::Application begin Create]
@@ -14,6 +18,7 @@ proc Delnov_Create_Line { pnt1_name pnt2_name } {
     set curve [pw::Connector create]
     $curve addSegment $pnts
     $curve calculateDimension
+    $curve setName $line_name
 
   $create end
   unset create

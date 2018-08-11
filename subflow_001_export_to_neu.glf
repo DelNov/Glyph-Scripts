@@ -52,50 +52,50 @@ source "delnov.glf"
 #------------------------
 # Four points on the rod
 #------------------------
-[pw::Point create]  setPoint [list [expr $X_0 + $R]  \
-                                   $Y_0              \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0 + $R * cos($ANGLE_RAD)]  \
-                                   [expr $Y_0 + $R * sin($ANGLE_RAD)]  \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0 + $R * sin($ANGLE_RAD)]  \
-                                   [expr $Y_0 + $R * cos($ANGLE_RAD)]  \
-                                   $Z_0]
-[pw::Point create]  setPoint [list $X_0              \
-                                   [expr $Y_0 + $R]  \
-                                   $Z_0]
+Delnov_Create_Point [expr $X_0 + $R]  \
+                    $Y_0              \
+                    $Z_0
+Delnov_Create_Point [expr $X_0 + $R * cos($ANGLE_RAD)]  \
+                    [expr $Y_0 + $R * sin($ANGLE_RAD)]  \
+                    $Z_0
+Delnov_Create_Point [expr $X_0 + $R * sin($ANGLE_RAD)]  \
+                    [expr $Y_0 + $R * cos($ANGLE_RAD)]  \
+                    $Z_0
+Delnov_Create_Point $X_0              \
+                    [expr $Y_0 + $R]  \
+                    $Z_0
 
 #----------------------------------------------
 # Four points on the rod on the boundary layer
 #----------------------------------------------
-[pw::Point create]  setPoint [list [expr $X_0 + $RBL]  \
-                                   $Y_0              \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0 + $RBL * cos($ANGLE_RAD)]  \
-                                   [expr $Y_0 + $RBL * sin($ANGLE_RAD)]  \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0 + $RBL * sin($ANGLE_RAD)]  \
-                                   [expr $Y_0 + $RBL * cos($ANGLE_RAD)]  \
-                                   $Z_0]
-[pw::Point create]  setPoint [list $X_0              \
-                                   [expr $Y_0 + $RBL]  \
-                                   $Z_0]
+Delnov_Create_Point [expr $X_0 + $RBL]  \
+                    $Y_0              \
+                    $Z_0
+Delnov_Create_Point [expr $X_0 + $RBL * cos($ANGLE_RAD)]  \
+                    [expr $Y_0 + $RBL * sin($ANGLE_RAD)]  \
+                    $Z_0
+Delnov_Create_Point [expr $X_0 + $RBL * sin($ANGLE_RAD)]  \
+                    [expr $Y_0 + $RBL * cos($ANGLE_RAD)]  \
+                    $Z_0
+Delnov_Create_Point $X_0              \
+                    [expr $Y_0 + $RBL]  \
+                    $Z_0
 
 #-------------------------------
 # Four points in the subchannel
 #-------------------------------
-[pw::Point create]  setPoint [list [expr $X_0 + $W_HALF]       \
-                                   $Y_0                        \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0 + $W_HALF]       \
-                                   [expr $Y_0 + $W_HALF - $A]  \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0 + $W_HALF - $A]  \
-                                   [expr $Y_0 + $W_HALF]       \
-                                   $Z_0]
-[pw::Point create]  setPoint [list [expr $X_0]                 \
-                                   [expr $Y_0 + $W_HALF]       \
-                                   $Z_0]
+Delnov_Create_Point [expr $X_0 + $W_HALF]       \
+                    $Y_0                        \
+                    $Z_0
+Delnov_Create_Point [expr $X_0 + $W_HALF]       \
+                    [expr $Y_0 + $W_HALF - $A]  \
+                    $Z_0
+Delnov_Create_Point [expr $X_0 + $W_HALF - $A]  \
+                    [expr $Y_0 + $W_HALF]       \
+                    $Z_0
+Delnov_Create_Point [expr $X_0]                 \
+                    [expr $Y_0 + $W_HALF]       \
+                    $Z_0
 
 puts "Defined all the points"
 
@@ -116,23 +116,23 @@ Delnov_Create_Arc_Name "point-8" "point-7" $X_0 $Y_0 $Z_0 "seg-4"
 #----------------------------------------------------------
 # Segments inside the boundary layer stemming from the rod
 #----------------------------------------------------------
-Delnov_Create_Line_Name "point-1" "point-5" "lay-1"
-Delnov_Create_Line_Name "point-4" "point-8" "lay-2"
+Delnov_Create_Line_From_Points_Name "point-1" "point-5" "lay-1"
+Delnov_Create_Line_From_Points_Name "point-4" "point-8" "lay-2"
 
 #------------------------------------------------------------
 # Segments stemming from the boundary layer towards the core
 #------------------------------------------------------------
-Delnov_Create_Line_Name "point-5" "point-9"  "cor-1"
-Delnov_Create_Line_Name "point-6" "point-10" "cor-2"
-Delnov_Create_Line_Name "point-7" "point-11" "cor-3"
-Delnov_Create_Line_Name "point-8" "point-12" "cor-4"      
+Delnov_Create_Line_From_Points_Name "point-5" "point-9"  "cor-1"
+Delnov_Create_Line_From_Points_Name "point-6" "point-10" "cor-2"
+Delnov_Create_Line_From_Points_Name "point-7" "point-11" "cor-3"
+Delnov_Create_Line_From_Points_Name "point-8" "point-12" "cor-4"      
 
 #--------------------------------
 # Segments inside the subchannel
 #--------------------------------
-Delnov_Create_Line_Name "point-9"  "point-10"                "seg-5"
-Delnov_Create_Arc_Name  "point-10" "point-11" $X_0 $Y_0 $Z_0 "mid-3"  
-Delnov_Create_Line_Name "point-12" "point-11"                "seg-6"
+Delnov_Create_Line_From_Points_Name "point-9"  "point-10"                "seg-5"
+Delnov_Create_Arc_Name              "point-10" "point-11" $X_0 $Y_0 $Z_0 "mid-3"  
+Delnov_Create_Line_From_Points_Name "point-12" "point-11"                "seg-6"
 
 # At this point you have connections called "cor", "lay", "mid", "seg" 
 

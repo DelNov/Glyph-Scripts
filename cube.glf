@@ -45,20 +45,20 @@ puts "Defined all the points"
 #-----------------
 # Define segments 
 #-----------------
-Delnov_Create_Line "point-1" "point-2" 
-Delnov_Create_Line "point-2" "point-3" 
-Delnov_Create_Line "point-3" "point-4" 
-Delnov_Create_Line "point-4" "point-1" 
+Delnov_Create_Line_From_Points "point-1" "point-2" 
+Delnov_Create_Line_From_Points "point-2" "point-3" 
+Delnov_Create_Line_From_Points "point-3" "point-4" 
+Delnov_Create_Line_From_Points "point-4" "point-1" 
 
-Delnov_Create_Line "point-5" "point-6" 
-Delnov_Create_Line "point-6" "point-7" 
-Delnov_Create_Line "point-7" "point-8" 
-Delnov_Create_Line "point-8" "point-5" 
+Delnov_Create_Line_From_Points "point-5" "point-6" 
+Delnov_Create_Line_From_Points "point-6" "point-7" 
+Delnov_Create_Line_From_Points "point-7" "point-8" 
+Delnov_Create_Line_From_Points "point-8" "point-5" 
 
-Delnov_Create_Line "point-1" "point-5" 
-Delnov_Create_Line "point-2" "point-6" 
-Delnov_Create_Line "point-3" "point-7" 
-Delnov_Create_Line "point-4" "point-8" 
+Delnov_Create_Line_From_Points "point-1" "point-5" 
+Delnov_Create_Line_From_Points "point-2" "point-6" 
+Delnov_Create_Line_From_Points "point-3" "point-7" 
+Delnov_Create_Line_From_Points "point-4" "point-8" 
 
 #------------------
 # Creating domains
