@@ -38,12 +38,18 @@ proc Delnov_Extrude_Structured_Block { dom_list dir dist n } {
     # For each block define the mode of translation and the translate direction
     foreach b $new_blocks {
       $b setExtrusionSolverAttribute Mode Translate
-      if { $dir == "x" } {
-        $b setExtrusionSolverAttribute TranslateDirection {1 0 0}
-      } elseif { $dir == "y" } {
-        $b setExtrusionSolverAttribute TranslateDirection {0 1 0}
-      } elseif { $dir == "z" } {
-        $b setExtrusionSolverAttribute TranslateDirection {0 0 1}
+      if {       $dir ==  "x" } {
+        $b setExtrusionSolverAttribute TranslateDirection { 1  0  0}
+      } elseif { $dir == "-x" } {
+        $b setExtrusionSolverAttribute TranslateDirection {-1  0  0}
+      } elseif { $dir ==  "y" } {
+        $b setExtrusionSolverAttribute TranslateDirection { 0  1  0}
+      } elseif { $dir == "-y" } {
+        $b setExtrusionSolverAttribute TranslateDirection { 0 -1  0}
+      } elseif { $dir ==  "z" } {
+        $b setExtrusionSolverAttribute TranslateDirection { 0  0  1}
+      } elseif { $dir == "-z" } {
+        $b setExtrusionSolverAttribute TranslateDirection { 0  0 -1}
       }
       $b setExtrusionSolverAttribute TranslateDistance   $dist
     }
