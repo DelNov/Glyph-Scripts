@@ -4,8 +4,10 @@ source "Delnov/Create_Point.glf"
 # Commands for creating arcs and lines
 source "Delnov/Create_Arc.glf" 
 source "Delnov/Create_Arc_Name.glf" 
-source "Delnov/Create_Line.glf" 
-source "Delnov/Create_Line_Name.glf" 
+source "Delnov/Create_Line_From_Points.glf" 
+source "Delnov/Create_Line_From_Points_Name.glf" 
+source "Delnov/Create_Line_From_Coords.glf" 
+source "Delnov/Create_Line_From_Coords_Name.glf" 
 
 # Commands for creating and manipulating connectors
 source "Delnov/Get_Begin_Spacing.glf"
@@ -29,11 +31,12 @@ source "Delnov/Modify_Dimension_By_Name_List.glf"
 
 source "Delnov/Get_Length_By_Name.glf"
 
-# Commands for creating domains
+# Commands for creating domains (and one for splitting)
 source "Delnov/Create_Structured_Domain.glf"
 source "Delnov/Create_Structured_Domain_Name.glf"
 source "Delnov/Create_Unstructured_Domain.glf"
 source "Delnov/Create_Unstructured_Domain_Name.glf"
+source "Delnov/Split_Structured_Domain.glf"
 
 # Commands for creation of blocks
 source "Delnov/Create_Structured_Block.glf"

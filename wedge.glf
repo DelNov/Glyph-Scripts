@@ -45,9 +45,9 @@ puts "Defined all the points"
 #-----------------
 # Define segments 
 #-----------------
-Delnov_Create_Line "point-1" "point-2" 
-Delnov_Create_Line "point-2" "point-3" 
-Delnov_Create_Line "point-3" "point-1" 
+Delnov_Create_Line_From_Points "point-1" "point-2" 
+Delnov_Create_Line_From_Points "point-2" "point-3" 
+Delnov_Create_Line_From_Points "point-3" "point-1" 
 
 #--------------------------------------
 # Define resolution on all connections
