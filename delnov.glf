@@ -1,3 +1,6 @@
+# General (non-Pointwise specific) functions
+source "Delnov/Avg_Points.glf"
+
 # Commands for creation of points
 source "Delnov/Create_Point.glf"
 
