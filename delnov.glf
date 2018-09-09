@@ -55,6 +55,8 @@ source "Delnov/Get_Entities_In_Bounding_Box.glf"
 source "Delnov/Copy_Objects_By_Name_Into_Clipboard.glf"
 source "Delnov/Translate_Objects_From_Clipboard_Along_Vector.glf"
 source "Delnov/Rotate_Objects_From_Clipboard_Around_Line.glf"
+source "Delnov/Mirror_Entities.glf"
+source "Delnov/Mirror_Entities_By_Name_Pattern.glf"
 
 # Commands for boundary conditions
 source "Delnov/Introduce_Bnd_Conds.glf"
