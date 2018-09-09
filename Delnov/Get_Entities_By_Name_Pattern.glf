@@ -1,8 +1,10 @@
 #===============================================================================
-proc Delnov_Get_Entities_By_Name_Pattern { pool pattern_list } {
+proc Delnov_Get_Entities_By_Name_Pattern { pattern_list } {
 #-------------------------------------------------------------------------------
 # Returns entities from inital "pool" whose name starts with "pattern"
 #-------------------------------------------------------------------------------
+
+  set pool [pw::Grid getAll]
 
   # Initialize list which will hold selected entities
   set sel_ent [list]

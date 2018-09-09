@@ -80,7 +80,7 @@ Delnov_Modify_Dimension_By_Name_Pattern "con" $N
 #----------------
 # Create a block
 #----------------
-set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+set all_dom [Delnov_Get_Entities_By_Name_Pattern "dom"]
 set all_faces [list]
 foreach dom $all_dom {
   lappend all_faces [pw::FaceStructured createFromDomains $dom]
@@ -129,7 +129,7 @@ $bc apply [list [pw::GridEntity getByName "blk-1"]  \
 #------------------------
 
 # Select all the blocks ...
-set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
+set blocks_only [Delnov_Get_Entities_By_Name_Pattern "blk"]
 
 # ... and export them
 set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]

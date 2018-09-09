@@ -1,5 +1,5 @@
 #===============================================================================
-proc Delnov_Modify_Dimension_By_Name_Pattern { name_pat n } {
+proc Delnov_Modify_Dimension_By_Name_Pattern { pattern n } {
 #-------------------------------------------------------------------------------
 # Modifies dimension of connections specified by a name pattern
 #
@@ -7,7 +7,7 @@ proc Delnov_Modify_Dimension_By_Name_Pattern { name_pat n } {
 #-------------------------------------------------------------------------------
 
   # Extract grid entites by the name pattern ...
-  set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $name_pat]
+  set all_con [Delnov_Get_Entities_By_Name_Pattern $pattern]
 
   # ... and call the sister function
   Delnov_Modify_Dimension $all_con $n

@@ -7,7 +7,7 @@ proc Delnov_Modify_Dimension_By_Name_List { con_names n } {
 #-------------------------------------------------------------------------------
 
   # Extract grid entites by the name pattern ...
-  set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] $con_names]
+  set all_con [Delnov_Get_Entities_By_Name_Pattern $con_names]
 
   # ... and call the sister function
   Delnov_Modify_Dimension $all_con $n

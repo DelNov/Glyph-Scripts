@@ -60,7 +60,7 @@ Delnov_Create_Line_From_Points "point-4" "point-5"
 #--------------------------------------
 # Define resolution on all connections
 #--------------------------------------
-set all_con [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "con"]
+set all_con [Delnov_Get_Entities_By_Name_Pattern "con"]
 Delnov_Modify_Dimension $all_con $N
 unset all_con
 
@@ -112,7 +112,7 @@ $bc apply [list [pw::GridEntity getByName "blk-1"]  \
 #------------------------
 
 # Select all the blocks ...
-set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
+set blocks_only [Delnov_Get_Entities_By_Name_Pattern "blk"]
 
 # ... and export them
 set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]

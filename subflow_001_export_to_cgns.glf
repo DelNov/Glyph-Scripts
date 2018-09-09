@@ -287,7 +287,7 @@ set box [list [list $B_MIN $B_MIN -1.0e+6]  \
               [list $B_MAX $B_MAX  1.0e+6]]
 
 # Fetch all entities starting with "seg"
-set seg_only     [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "seg"]
+set seg_only     [Delnov_Get_Entities_By_Name_Pattern "seg"]
 set box_seg_only [Delnov_Get_Entities_In_Bounding_Box $seg_only $box]
 
 set con [lindex $con_mid_names 0]
@@ -326,7 +326,7 @@ foreach ge [pw::Grid getAll] {
 # Browse through all rods and rename the rods around them to "domrod.."
 
 # Stage 1: go through quartants
-set dom_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+set dom_only [Delnov_Get_Entities_By_Name_Pattern "dom"]
 for {set i 0} {$i < [expr $N_SUB*2] } {incr i} {
   for {set j 0} {$j < [expr $N_SUB*2]} {incr j} {
 
@@ -350,7 +350,7 @@ for {set i 0} {$i < [expr $N_SUB*2] } {incr i} {
 unset dom_only
 
 # Stage 2: go through rods        
-set dom_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+set dom_only [Delnov_Get_Entities_By_Name_Pattern "dom"]
 for {set i 0} {$i <= $N_SUB} {incr i} {
   for {set j 0} {$j <= $N_SUB} {incr j} {
 
@@ -394,7 +394,7 @@ unset dom_only
 #-----------------
 # Join connectors
 #-----------------
-set con_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "con"]
+set con_only [Delnov_Get_Entities_By_Name_Pattern "con"]
 set joining [pw::Connector join -reject _TMP(ignored) -keepDistribution $con_only]
 unset _TMP(ignored)
 unset joining
@@ -405,13 +405,13 @@ puts "Extending to 3D"
 #-------------------
 # Create new blocks 
 #-------------------
-set all_dom [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+set all_dom [Delnov_Get_Entities_By_Name_Pattern "dom"]
 Delnov_Extrude_Structured_Block $all_dom "z" $H $N_H
 
 #--------------
 # Join domains
 #---------------
-set dom_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "dom"]
+set dom_only [Delnov_Get_Entities_By_Name_Pattern "dom"]
 set joining [pw::DomainStructured join -reject _TMP(ignored) $dom_only]
 unset _TMP(ignored)
 unset joining
@@ -488,7 +488,7 @@ $wall_bnd_cond     apply $wall_faces
 #--------------------------
 
 # Select all the blocks ...
-set blocks_only [Delnov_Get_Entities_By_Name_Pattern [pw::Grid getAll] "blk"]
+set blocks_only [Delnov_Get_Entities_By_Name_Pattern "blk"]
 
 # ... and export them
 set export [pw::Application begin CaeExport [pw::Entity sort $blocks_only]]
